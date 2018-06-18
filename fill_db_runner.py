@@ -17,6 +17,11 @@ def create_doc(bulks: pd.DataFrame, idx: int) -> Dict[str, Union[List[float], st
 
 
 def populate_database(glove_source, glove_collection):
+    glove_collection.insert_one({
+        'word': '__UNKNOWN__',
+        'vec': [0.0 for i in range(utils.get_default_dimensionality())]
+    })
+
     df = pd.read_csv(glove_source, delim_whitespace=True, quoting=_csv.QUOTE_NONE)
     bulk_size = 8192
     words_number = df.shape[0]

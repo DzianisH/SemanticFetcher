@@ -7,7 +7,7 @@ import utils
 
 glove = utils.get_collection()
 
-df_tsne = pd.read_csv("data/bot-search-metrics-tsne.csv")
+df_tsne = pd.read_csv("data/bot-search-metrics.csv")
 
 
 queries = utils.convert_to_vec(df_tsne['Keyword'])
