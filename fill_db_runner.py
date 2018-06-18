@@ -3,26 +3,22 @@ import time
 from typing import Dict, List, Union
 
 import pandas as pd
-from pymongo import MongoClient
 
-client = MongoClient()
-db = client['glove_db']
+import utils
 
-dimensionality = 25
-glove = db['glove_twitter_{}d'.format(dimensionality)]
-print(glove)
+glove = utils.get_collection()
 
 
 def create_doc(bulks: pd.DataFrame, idx: int) -> Dict[str, Union[List[float], str]]:
     return {
         'word': bulks['word'][idx],
-        'vec': [bulks['ort' + str(ort)][idx] for ort in range(1, dimensionality + 1)]
+        'vec': [bulks['ort' + str(ort)][idx] for ort in range(1, utils.get_default_dimensionality() + 1)]
     }
 
 
 def populate_database(glove_source, glove_collection):
     df = pd.read_csv(glove_source, delim_whitespace=True, quoting=_csv.QUOTE_NONE)
-    bulk_size = 32000
+    bulk_size = 8192
     words_number = df.shape[0]
     print("Going to convert", words_number, "items by", bulk_size, "in the batch")
     start_time = time.time()
@@ -42,6 +38,6 @@ def populate_database(glove_source, glove_collection):
 
 count = glove.count()
 if count < 1000000:
-    populate_database('data/glove.twitter.27B.25d.txt', glove)
+    populate_database('data/glove.twitter.27B.{}d.txt'.format(utils.get_default_dimensionality()), glove)
 else:
-    print("wont populate database, as it already contains", count, "items")
+    print("wont populate database, as it already contain", count, "items")
