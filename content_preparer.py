@@ -45,7 +45,7 @@ def check_all_words_known(df, glove, column='Keyword'):
             sen += w2v['word'] + ' '
         sentences.append(sen)
 
-    df['effective-keywords'] = sentences
+    df['effective-keyword'] = sentences
 
     if len(unknowns) == 0:
         print('all words from given sequences are known')

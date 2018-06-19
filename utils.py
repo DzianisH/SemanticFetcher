@@ -20,6 +20,7 @@ def get_default_dimensionality() -> int:
 
 
 def convert_to_vec(df: pd.DataFrame, glove=get_collection(), dimensionality=get_default_dimensionality()):
+    print('converting words to vectors')
     vecs = []
     default_vec = __get_default_vector(glove)
     for sentence in df:
@@ -67,7 +68,7 @@ def word2vec(word: str, glove: Collection, use_default=True):
                 return None
 
         w2v['word'] = "{} {}".format(w2v['word'], sub_w2v['word'])
-        w2v['vec'] = [w2v['vec'][i] + sub_w2v['vec'][i] for i in range(len(w2v))]
+        w2v['vec'] = [w2v['vec'][i] + sub_w2v['vec'][i] for i in range(len(w2v['vec']))]
 
     return {'word': w2v['word'].strip(), 'vec': w2v['vec']}
 
