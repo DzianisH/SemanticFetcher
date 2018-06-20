@@ -19,7 +19,7 @@ def get_default_dimensionality() -> int:
     return __dimensionality
 
 
-def convert_to_vec(df: pd.DataFrame, glove=get_collection(), dimensionality=get_default_dimensionality()):
+def convert_to_vec(df: pd.DataFrame, glove=get_collection(), dimensionality=get_default_dimensionality()) -> np.ndarray:
     print('converting words to vectors')
     vecs = []
     default_vec = __get_default_vector(glove)
@@ -92,3 +92,11 @@ def __retokenize(word: str) -> []:
         word = word.replace(key, " {} ".format(value))
 
     return word.strip().split()
+
+
+def float_range(min, max, step=1.):
+    list = []
+    while min < max:
+        list.append(min)
+        min += step
+    return list
