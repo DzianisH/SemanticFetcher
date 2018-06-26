@@ -24,13 +24,16 @@ def convert_to_vec(df: pd.DataFrame, glove=get_collection(), dimensionality=get_
     vecs = []
     default_vec = __get_default_vector(glove)
     for sentence in df:
-        words = sentence.strip().split()
         vec = default_vec
-        for word in words:
+        words_number = 0
+        for word in sentence.strip().split():
             entity = word2vec(word, glove)
             # print(entity)
             if entity is not None:
                 vec = [vec[i] + entity['vec'][i] for i in range(dimensionality)]
+                words_number += 1
+        if words_number > 1:
+            vec = np.divide(vec, words_number)
         vecs.append(vec)
 
     vecs = np.array(vecs)
@@ -52,24 +55,25 @@ def __get_default_word2vec(glove=get_collection()):
     return __default_vector
 
 
-def word2vec(word: str, glove: Collection, use_default=True):
+def word2vec(word: str, glove: Collection):
     w2v = glove.find_one({'word': word})
     if w2v is not None:
         return {'word': w2v['word'], 'vec': w2v['vec']}
     w2v = __get_default_word2vec(glove).copy()
     w2v['word'] = ''
 
+    words_number = 0
     for word in __retokenize(word):
         sub_w2v = glove.find_one({'word': word})
         if sub_w2v is None:
-            if use_default:
-                sub_w2v = __get_default_word2vec(glove)
-            else:
-                return None
-
+            sub_w2v = __get_default_word2vec(glove)
+        else:
+            words_number += 1
         w2v['word'] = "{} {}".format(w2v['word'], sub_w2v['word'])
         w2v['vec'] = [w2v['vec'][i] + sub_w2v['vec'][i] for i in range(len(w2v['vec']))]
 
+    if words_number > 1:
+        w2v['vec'] = np.divide(w2v['vec'], words_number)
     return {'word': w2v['word'].strip(), 'vec': w2v['vec']}
 
 

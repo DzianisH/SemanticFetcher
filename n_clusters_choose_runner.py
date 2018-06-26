@@ -3,15 +3,10 @@ import numpy as np
 from sklearn import cluster
 import matplotlib.pyplot as plt
 
-import utils
-
-glove = utils.get_collection()
-
 df_tsne = pd.read_csv("data/bot-search-metrics-id-tsne.csv")
+queries = df_tsne[['x-tsne', 'y-tsne']].values
 
-queries = utils.convert_to_vec(df_tsne['Keyword'], utils.get_collection(100), 100)
-
-n_clusters_range = range(2, 33)
+n_clusters_range = range(2, 15)
 print("Running k-means clustering for №clusters {}".format(n_clusters_range))
 inertia = []
 for n_clusters in n_clusters_range:
